@@ -1,20 +1,37 @@
+NAME = philo
 CC = cc
 CFLAGS=  -Wall -Wextra -Werror  -g3
-SRCS = main.c
-OBJS = $(SRCS:%.c=%.o)
-NAME = philo
 
-.PHONY: all clean fclean re bonus
+SRC_PATH = src/
+OBJ_PATH = obj/
+SRC_NAME = main.c
+OBJ_NAME = $(SRC_NAME:.c=.o)
 
-all:  $(NAME) 
+OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
+SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 
-$(NAME): $(OBJS) 
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) 
+.DEFAULT_GOAL := all
+
+.PHONY: all clean fclean re 
+
+$(NAME): $(OBJ)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	@mkdir -p $(@D)
+	@$(CC) $(CFLAGS) -o $@ -c $<
+
+-include $(OBJ:%.o=%.d)
+
+all: $(NAME)
 
 clean:
-	$(RM) $(OBJS)
+	rm -rf obj
+
 fclean: clean
-	$(RM) $(NAME)
-re: fclean all
+	rm -rf $(NAME)
+
+re:
+	@$(MAKE) -s fclean all
 
 
