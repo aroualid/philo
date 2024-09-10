@@ -6,4 +6,5 @@ int main (int ac, char **av)
 		printf ("ok\n");
 	else
 		printf ("non\n");
+	(void) av;
 }
