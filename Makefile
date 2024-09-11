@@ -4,7 +4,9 @@ CFLAGS=  -Wall -Wextra -Werror  -g3
 
 SRC_PATH = src/
 OBJ_PATH = obj/
-SRC_NAME = main.c
+SRC_NAME = main.c \
+		   utils1.c\
+		   atol.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

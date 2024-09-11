@@ -16,7 +16,7 @@ long	ft_atol(const char *str)
 	{
 		if (str[i] == '-')
 		{
-			signe *= -1;
+			return (0);
 		}
 		i++;
 	}

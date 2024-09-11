@@ -3,6 +3,7 @@
 
 # include "stdio.h"
 # include <limits.h>
+# include <stdlib.h>
 
 typedef struct s_args
 {
