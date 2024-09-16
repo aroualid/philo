@@ -16,6 +16,6 @@ typedef struct s_args
 
 long	ft_atol(const char *str);
 int		ft_strlen(char *s);
-
+int		ft_isdigit(int c);
 
 #endif

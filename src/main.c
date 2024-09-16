@@ -20,16 +20,26 @@ int	check_arg(char **av, int ac, t_args *args)
 {
 	int		i;
 	long	atol;
-
+	int		j;
+	
 	atol = 0;
+	j = 0;
 	i = 1;
 	while (av[i] && i <= ac)
 	{
+		while (av[i][j])
+		{
+			if (ft_isdigit(av[i][j]) == 1)
+				j++;
+			else
+				return (0);
+		}
 		atol = ft_atol(av[i]);
 		if ((atol > INT_MAX || atol <= 0) || (ft_strlen(av[i]) >= 11))
 			return (0);
 		else
 			fill_value (i, atol, args);
+		j = 0;
 		i++;
 	}
 	return (1);
