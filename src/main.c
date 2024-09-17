@@ -51,20 +51,19 @@ void	*print_test_odd(void *arg)
 {
 	int i = *(int *)arg;
 	i += 1;
-	pthread_mutex_lock(&mutex);
-    printf("%i est impair\n", i);
-    pthread_mutex_unlock(&mutex); 
-	free(arg);
-	return NULL;
-}
-
-void	*print_test_even(void *arg)
-{
-	int i = *(int *)arg;
-	i += 1;
-	pthread_mutex_lock(&mutex);
-    printf("%i est pair\n", i);
-    pthread_mutex_unlock(&mutex); 
+	
+	if (i % 2 == 0)
+	{
+		pthread_mutex_lock(&mutex);
+	    printf("%i est pair\n", i);
+	    pthread_mutex_unlock(&mutex); 
+	}
+	else
+	{
+		pthread_mutex_lock(&mutex);
+	    printf("%i est impair\n", i);
+	    pthread_mutex_unlock(&mutex); 
+	}
 	free(arg);
 	return NULL;
 }
@@ -87,25 +86,13 @@ int	test_thread(t_args *args)
             return 1;
         }
         *arg = i ; 
-
-		if (i % 2 == 0) 
+		if (pthread_create(&thread[i], NULL, print_test_odd, arg)) 
 		{
-			if (pthread_create(&thread[i], NULL, print_test_odd, arg)) 
-			{
-				fprintf(stderr, "Erreur lors de la création du thread\n");
-				free(arg);  
-				return 1;
+			fprintf(stderr, "Erreur lors de la création du thread\n");
+			free(arg);  
+			return 1;
 			}
-		}
-		else 
-		{
-            if (pthread_create(&thread[i], NULL, print_test_even, arg)) 
-			{
-                fprintf(stderr, "Erreur lors de la création du thread\n");
-                free(arg);  
-                return 1;
-            }
-        }
+
         i++;
     }
 	for (int j = 0; j < args->nb_philo; j++)
