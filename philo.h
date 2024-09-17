@@ -4,6 +4,8 @@
 # include "stdio.h"
 # include <limits.h>
 # include <stdlib.h>
+# include <threads.h>
+# include <pthread.h>
 
 typedef struct s_args
 {
