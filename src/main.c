@@ -79,9 +79,7 @@ int	test_thread(t_args *args)
 	printf("nb = %i\n", args->nb_philo);
 	while (i < args->nb_philo)
 	{
-		pthread_mutex_lock(&mutex);
-		printf("i = %i\n", i);
-		pthread_mutex_unlock(&mutex); 
+
         int *arg = malloc(sizeof(*arg));
         if (!arg) 
 		{
