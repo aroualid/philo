@@ -66,6 +66,7 @@ void	*print_test_odd(void *arg)
 	return NULL;
 }
 
+
 int	test_thread(t_args *args)
 {
 	pthread_t	thread[args->nb_philo];
