@@ -14,7 +14,15 @@ typedef struct s_args
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					each_eat;
+	int					philo_n;				
+	pthread_mutex_t		mutex;
+
 }						t_args;
+
+typedef struct s_philo {
+    int philo_n;
+    t_args *args;
+} t_philo;
 
 long	ft_atol(const char *str);
 int		ft_strlen(char *s);

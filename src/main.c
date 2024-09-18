@@ -45,26 +45,24 @@ int	check_arg(char **av, int ac, t_args *args)
 	return (1);
 }
 
-pthread_mutex_t mutex;
 
 void	*print_test_odd(void *arg)
 {
-	int i = *(int *)arg;
-	i += 1;
+	t_args *args = (t_args *)arg;
+	int	i = args->philo_n;
 	
 	if (i % 2 == 0)
 	{
-		pthread_mutex_lock(&mutex);
+		pthread_mutex_lock(&args->mutex);
 	    printf("%i est pair\n", i);
-	    pthread_mutex_unlock(&mutex); 
+	    pthread_mutex_unlock(&args->mutex); 
 	}
 	else
 	{
-		pthread_mutex_lock(&mutex);
+		pthread_mutex_lock(&args->mutex);
 	    printf("%i est impair\n", i);
-	    pthread_mutex_unlock(&mutex); 
+	    pthread_mutex_unlock(&args->mutex); 
 	}
-	free(arg);
 	return NULL;
 }
 
@@ -72,32 +70,26 @@ int	test_thread(t_args *args)
 {
 	pthread_t	thread[args->nb_philo];
 	int	i = 0;
-	
-	pthread_mutex_init(&mutex, NULL);
+
+	pthread_mutex_init(&args->mutex, NULL);
 
 	printf("nb = %i\n", args->nb_philo);
 	while (i < args->nb_philo)
 	{
-
-        int *arg = malloc(sizeof(*arg));
-        if (!arg) 
-		{
-            fprintf(stderr, "Erreur d'allocation de mémoire\n");
-            return 1;
-        }
-        *arg = i ; 
-		if (pthread_create(&thread[i], NULL, print_test_odd, arg)) 
+		pthread_mutex_lock(&args->mutex);
+		args->philo_n = i + 1;
+		pthread_mutex_unlock(&args->mutex);
+		
+		if (pthread_create(&thread[i], NULL, print_test_odd, args)) 
 		{
 			fprintf(stderr, "Erreur lors de la création du thread\n");
-			free(arg);  
 			return 1;
-			}
-
+		}
         i++;
     }
 	for (int j = 0; j < args->nb_philo; j++)
         pthread_join(thread[j], NULL);
-	pthread_mutex_destroy(&mutex);
+	pthread_mutex_destroy(&args->mutex);
 	return (0);
 }
 
@@ -105,7 +97,7 @@ int main (int ac, char **av)
 {
 	t_args		*args;
 
-	args = calloc(sizeof(t_args), 1);
+	args = calloc(sizeof(t_args) + sizeof(pthread_mutex_t), 1);
 	if (ac == 5 || ac == 6)
 	{
 		if (check_arg(av, ac, args) == 0)
