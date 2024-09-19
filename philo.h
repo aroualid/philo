@@ -9,17 +9,19 @@ typedef struct s_args t_args;
 # include <stdlib.h>
 # include <threads.h>
 # include <pthread.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 typedef struct s_philo
 {
-	int					time_to_die;
-	int					time_to_eat;
-	int					time_to_sleep;
-	int					each_eat;
+	unsigned long		time_to_die;
+	unsigned long		time_to_eat;
+	unsigned long		time_to_sleep;
+	unsigned long		each_eat;
 	int					philo_nb;
 	pthread_t			thread;
-	pthread_mutex_t		left_fork;
-	pthread_mutex_t		right_fork;
+	pthread_mutex_t		*left_fork;
+	pthread_mutex_t		*right_fork;
 	t_args				*args;
 }						t_philo;
 
@@ -27,6 +29,8 @@ typedef struct s_args
 {
 	int					nb_philo;
 	pthread_mutex_t		mutex;
+	unsigned long		time;
+	unsigned long		first_time;
 	t_philo				**philo;
 }						t_args;
 
