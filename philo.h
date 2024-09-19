@@ -3,6 +3,7 @@
 
 typedef struct s_args t_args;
 
+
 # include "stdio.h"
 # include <limits.h>
 # include <stdlib.h>
@@ -16,6 +17,7 @@ typedef struct s_philo
 	int					time_to_sleep;
 	int					each_eat;
 	int					philo_nb;
+	pthread_t			thread;
 	pthread_mutex_t		left_fork;
 	pthread_mutex_t		right_fork;
 	t_args				*args;
@@ -24,7 +26,6 @@ typedef struct s_philo
 typedef struct s_args
 {
 	int					nb_philo;
-	int					philo_n;
 	pthread_mutex_t		mutex;
 	t_philo				**philo;
 }						t_args;
