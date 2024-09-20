@@ -18,6 +18,7 @@ typedef struct s_philo
 	unsigned long		time_to_eat;
 	unsigned long		time_to_sleep;
 	unsigned long		each_eat;
+	unsigned long		last_eat;
 	int					philo_nb;
 	pthread_t			thread;
 	pthread_mutex_t		*left_fork;
@@ -31,11 +32,15 @@ typedef struct s_args
 	pthread_mutex_t		mutex;
 	unsigned long		time;
 	unsigned long		first_time;
+	int					die;
 	t_philo				**philo;
 }						t_args;
 
 long	ft_atol(const char *str);
 int		ft_strlen(char *s);
 int		ft_isdigit(int c);
+void	what_time(t_args *args);
+void	what_first_time(t_args *args);
+void	my_usleep(unsigned long time, t_args *args);
 
 #endif

@@ -1,29 +1,15 @@
 #include "../philo.h"
 #include <pthread.h>
 
-void	what_first_time(t_args *args)
-{
-    struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-    args->first_time =  tv.tv_sec * 1000 + tv.tv_usec / 1000;
-}
-
-void	what_time(t_args *args)
-{
-    struct timeval	tv;
-	gettimeofday(&tv, NULL);
-	args->time = (tv.tv_sec * 1000 + tv.tv_usec / 1000) - args->first_time;
-
-}
 
 void	eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->args->mutex);
 	what_time(philo->args);
+	philo->last_eat = philo->args->time;
 	printf("%zu %d is eating\n", philo->args->time, philo->philo_nb);
 	pthread_mutex_unlock(&philo->args->mutex);
-	usleep (philo->time_to_eat * 1000);
+	my_usleep (philo->time_to_eat, philo->args);
 }
 
 void	lock_unlock_fork(t_philo *philo, int lock)
@@ -67,7 +53,7 @@ void	lock_unlock_fork(t_philo *philo, int lock)
 void	*rou(t_philo *philo)
 {
 	if (philo->philo_nb % 2 != 0)
-		usleep(philo->time_to_eat * 100 / 2);
+		my_usleep(philo->time_to_eat / 2, philo->args);
 	while (1)
 	{
 		lock_unlock_fork(philo, 1);
@@ -77,16 +63,21 @@ void	*rou(t_philo *philo)
 		what_time(philo->args);
 		printf("%zu %d is sleeping\n", philo->args->time, philo->philo_nb);
 		pthread_mutex_unlock(&philo->args->mutex);
-		usleep(philo->time_to_sleep * 1000);
+		my_usleep(philo->time_to_sleep, philo->args);
 		pthread_mutex_lock(&philo->args->mutex);
 		what_time(philo->args);
 		printf("%zu %d is thinking\n", philo->args->time, philo->philo_nb);
 		pthread_mutex_unlock(&philo->args->mutex);
-		usleep(1);
-
+		if (philo->args->die == 1)
+		{
+			pthread_mutex_lock(&philo->args->mutex);
+			what_time(philo->args);
+			printf("%zu %d died\n", philo->args->time, philo->philo_nb);
+			pthread_mutex_unlock(&philo->args->mutex);
+			break ;
+		}
 	}
-	
-		
+	return (NULL);
 }
 
 int	create_threads(t_args *args, void *rou)
@@ -104,6 +95,24 @@ int	create_threads(t_args *args, void *rou)
 		}
 		i++;
     }
+	i = 0;
+	while (1)
+	{
+		while (i < args->nb_philo)
+		{
+			pthread_mutex_lock(&args->mutex);
+			what_time(args);
+			pthread_mutex_unlock(&args->mutex);
+			if (args->time - args->philo[i]->last_eat  > args->philo[i]->time_to_die)
+			{
+				args->die = 1;
+				break ;
+			}
+			i++;
+		}
+		i = 0;
+	}
+	
 	for (int j = 0; j < args->nb_philo; j++)
         pthread_join(args->philo[j]->thread, NULL);
 	pthread_mutex_destroy(&args->mutex);
