@@ -70,10 +70,6 @@ void	*rou(t_philo *philo)
 		pthread_mutex_unlock(&philo->args->mutex);
 		if (philo->args->die == 1)
 		{
-			pthread_mutex_lock(&philo->args->mutex);
-			what_time(philo->args);
-			printf("%zu %d died\n", philo->args->time, philo->philo_nb);
-			pthread_mutex_unlock(&philo->args->mutex);
 			break ;
 		}
 	}
@@ -106,15 +102,24 @@ int	create_threads(t_args *args, void *rou)
 			if (args->time - args->philo[i]->last_eat  > args->philo[i]->time_to_die)
 			{
 				args->die = 1;
+				pthread_mutex_lock(&args->mutex);
+				what_time(args);
+				printf("%zu %d died\n", args->time, i + 1);
+				pthread_mutex_unlock(&args->mutex);
+
 				break ;
 			}
 			i++;
 		}
+		if (args->die == 1)
+		{
+			for (int j = 0; j < args->nb_philo; j++)
+				pthread_join(args->philo[j]->thread, NULL);
+			break ;
+		}
 		i = 0;
 	}
-	
-	for (int j = 0; j < args->nb_philo; j++)
-        pthread_join(args->philo[j]->thread, NULL);
+
 	pthread_mutex_destroy(&args->mutex);
 	return (0);
 }

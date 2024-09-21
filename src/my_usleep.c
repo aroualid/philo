@@ -20,13 +20,21 @@ void	my_usleep(unsigned long time, t_args *args)
 {
 	unsigned long	time_to_wait;
 	unsigned long	first_time;
-	
+	unsigned long what_is_time;
+
 	first_time = args->time;
 	time_to_wait = first_time + time;;
-
-	while (args->time < time_to_wait)
+	
+	pthread_mutex_lock(&args->mutex);
+	what_is_time = args->time;
+	pthread_mutex_unlock(&args->mutex);
+	while (what_is_time < time_to_wait)
 	{
 		usleep (20);
+		pthread_mutex_lock(&args->mutex);
 		what_time(args);
+		what_is_time = args->time;
+		pthread_mutex_unlock(&args->mutex);
+
 	}
 }
