@@ -34,7 +34,7 @@ void	my_usleep(unsigned long my_time, t_args *args)
 			return ;
 		}
 		pthread_mutex_unlock(&args->mutex);
-		usleep (20);
+		usleep (10);
 		what_is_time = what_time(args);
 
 	}
