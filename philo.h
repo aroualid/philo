@@ -30,17 +30,16 @@ typedef struct s_args
 {
 	int					nb_philo;
 	pthread_mutex_t		mutex;
-	unsigned long		time;
-	unsigned long		first_time;
 	int					die;
+	unsigned long		first_time;
 	t_philo				**philo;
 }						t_args;
 
 long	ft_atol(const char *str);
 int		ft_strlen(char *s);
 int		ft_isdigit(int c);
-void	what_time(t_args *args);
-void	what_first_time(t_args *args);
+unsigned long		what_time(t_args *args);
+void		what_first_time(t_args *args);
 void	my_usleep(unsigned long time, t_args *args);
 
 #endif
