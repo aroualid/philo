@@ -1,5 +1,6 @@
 #include "../philo.h"
 #include <pthread.h>
+#include <unistd.h>
 
 
 void	eat(t_philo *philo)
@@ -21,14 +22,14 @@ void	lock_unlock_fork(t_philo *philo, int lock)
 		if (philo->philo_nb == 1)
 		{
 			
-			pthread_mutex_lock(philo->right_fork);
+			pthread_mutex_lock(philo->left_fork);
 			pthread_mutex_lock(&philo->args->mutex);
 			if (philo->args->die == 0)
 			{
 				printf("%zu %d has taken a fork\n", what_time(philo->args), philo->philo_nb);
 			}
 			pthread_mutex_unlock(&philo->args->mutex);
-			pthread_mutex_lock(philo->left_fork);	
+			pthread_mutex_lock(philo->right_fork);	
 			pthread_mutex_lock(&philo->args->mutex);
 			if (philo->args->die == 0)
 			{
@@ -38,14 +39,14 @@ void	lock_unlock_fork(t_philo *philo, int lock)
 		}
 		else
 		{
-			pthread_mutex_lock(philo->left_fork);
+			pthread_mutex_lock(philo->right_fork);
 			pthread_mutex_lock(&philo->args->mutex);
 			if (philo->args->die == 0)
 			{
 				printf("%zu %d has taken a fork\n", what_time(philo->args), philo->philo_nb);
 			}
 			pthread_mutex_unlock(&philo->args->mutex);
-			pthread_mutex_lock(philo->right_fork);	
+			pthread_mutex_lock(philo->left_fork);	
 			pthread_mutex_lock(&philo->args->mutex);
 			if (philo->args->die == 0)
 			{
@@ -71,19 +72,24 @@ void	*rou(t_philo *philo)
 		lock_unlock_fork(philo, 0);
 		pthread_mutex_lock(&philo->args->mutex);
 		if (philo->args->die == 0)
-		{
 			printf("%zu %d is sleeping\n", what_time(philo->args), philo->philo_nb);
-		}
 		pthread_mutex_unlock(&philo->args->mutex);
 		my_usleep(philo->time_to_sleep, philo->args);
 		pthread_mutex_lock(&philo->args->mutex);
 		if (philo->args->die == 0)
 			printf("%zu %d is thinking\n", what_time(philo->args), philo->philo_nb);
 		pthread_mutex_unlock(&philo->args->mutex);
+		if (philo->time_to_die - (philo->time_to_eat + philo->time_to_sleep) >= 1)
+			my_usleep(philo->time_to_die - (philo->time_to_eat + philo->time_to_sleep) - 10, philo->args);
+		else
+			usleep(10);
+		pthread_mutex_lock(&philo->args->mutex);
 		if (philo->args->die == 1)
 		{
+			pthread_mutex_unlock(&philo->args->mutex);
 			return (NULL);
 		}
+		pthread_mutex_unlock(&philo->args->mutex);
 	}
 	return (NULL);
 }
@@ -108,6 +114,7 @@ int	create_threads(t_args *args, void *rou)
 	{
 		while (i < args->nb_philo)
 		{
+
 			pthread_mutex_lock(&args->mutex);
 			if (what_time(args) - args->philo[i]->last_eat  > args->philo[i]->time_to_die)
 			{
@@ -125,6 +132,7 @@ int	create_threads(t_args *args, void *rou)
 				pthread_join(args->philo[j]->thread, NULL);
 			break ;
 		}
+		usleep (50);
 		i = 0;
 	}
 
