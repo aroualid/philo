@@ -6,10 +6,11 @@
 void	eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->args->mutex);
-	philo->last_eat = what_time(philo->args);
 	if (philo->args->die == 0)
 	{
+		philo->last_eat = what_time(philo->args);
 		printf("%zu %d is eating\n", what_time(philo->args), philo->philo_nb);
+		philo->nb_eat++;
 	}
 	pthread_mutex_unlock(&philo->args->mutex);
 	my_usleep (philo->time_to_eat, philo->args);
@@ -84,7 +85,7 @@ void	*rou(t_philo *philo)
 		else
 			usleep(10);
 		pthread_mutex_lock(&philo->args->mutex);
-		if (philo->args->die == 1)
+		if (philo->args->die == 1 || philo->args->all_eat == 1)
 		{
 			pthread_mutex_unlock(&philo->args->mutex);
 			return (NULL);
@@ -97,7 +98,9 @@ void	*rou(t_philo *philo)
 int	create_threads(t_args *args, void *rou)
 {
 	int	i;
+	int	j;
 
+	j = 0;
 	i = 0;
 	pthread_mutex_init(&args->mutex, NULL);
 	while (i < args->nb_philo)
@@ -116,7 +119,23 @@ int	create_threads(t_args *args, void *rou)
 		{
 
 			pthread_mutex_lock(&args->mutex);
-			if (what_time(args) - args->philo[i]->last_eat  > args->philo[i]->time_to_die)
+			if (args->philo[i]->nb_eat >= args->philo[i]->each_eat && (args->philo[i]->each_eat != -1))
+			{
+				j = 0;
+				while (j < args->nb_philo)
+				{
+					if (args->philo[j]->nb_eat < args->philo[j]->each_eat)
+						break ;
+					j++;
+				}
+				if (j == args->nb_philo)
+				{
+					args->all_eat = 1;
+					pthread_mutex_unlock(&args->mutex);
+					break ;
+				}
+			}
+			if (what_time(args) - args->philo[i]->last_eat  >= args->philo[i]->time_to_die)
 			{
 				args->die = 1;
 				printf("%zu %d died\n", what_time(args), i + 1);
@@ -126,13 +145,20 @@ int	create_threads(t_args *args, void *rou)
 			pthread_mutex_unlock(&args->mutex);
 			i++;
 		}
-		if (args->die == 1)
+		if (args->die == 1 || args->all_eat == 1)
 		{
-			for (int j = 0; j < args->nb_philo; j++)
-				pthread_join(args->philo[j]->thread, NULL);
+			if (args->nb_philo > 1)
+			{
+				j =  0;
+				while (j < args->nb_philo)
+				{
+					pthread_join(args->philo[j]->thread, NULL);
+					j++;
+				}
+			}
 			break ;
 		}
-		usleep (50);
+		usleep (500);
 		i = 0;
 	}
 
@@ -218,7 +244,7 @@ int	check_arg(char **av, int ac)
 				return (0);
 		}
 		atol = ft_atol(av[i]);
-		if ((atol > INT_MAX || atol <= 0) || (ft_strlen(av[i]) >= 11))
+		if ((atol >= INT_MAX || atol <= 0) || (ft_strlen(av[i]) >= 11))
 			return (0);
 		j = 0;
 		i++;

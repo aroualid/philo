@@ -17,8 +17,9 @@ typedef struct s_philo
 	unsigned long		time_to_die;
 	unsigned long		time_to_eat;
 	unsigned long		time_to_sleep;
-	unsigned long		each_eat;
+	int					each_eat;
 	unsigned long		last_eat;
+	int					nb_eat;
 	int					philo_nb;
 	pthread_t			thread;
 	pthread_mutex_t		*left_fork;
@@ -31,6 +32,7 @@ typedef struct s_args
 	int					nb_philo;
 	pthread_mutex_t		mutex;
 	int					die;
+	int					all_eat;
 	unsigned long		first_time;
 	t_philo				**philo;
 }						t_args;
