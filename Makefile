@@ -7,8 +7,9 @@ OBJ_PATH = obj/
 SRC_NAME = main.c \
 		   utils1.c\
 		   atol.c\
-		   my_usleep.c
-
+		   my_usleep.c\
+		   eat.c\
+		   create_threads.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

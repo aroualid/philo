@@ -43,5 +43,6 @@ int		ft_isdigit(int c);
 unsigned long		what_time(t_args *args);
 void		what_first_time(t_args *args);
 void	my_usleep(unsigned long time, t_args *args);
-
+void	*rou(t_philo *philo);
+int		create_threads(t_args *args, void *rou);
 #endif
