@@ -30,36 +30,33 @@ int	create_fork(t_args *args)
 }
 
 
-void	fill_value(char **av, t_args *args, int ac)
+void fill_value(char **av, t_args *args, int ac)
 {
-	int	i;
+    int i = 0;
 
-	i = 0;
+    while (i < args->nb_philo)
+    {
+        args->philo[i] = calloc(1, sizeof(t_philo));
+        if (args->philo[i] == NULL)
+        {
+            printf("Memory allocation failed for philosopher %d\n", i + 1);
+            return;
+        }
 
-	while (i < args->nb_philo)
-	{
-		args->philo[i] = calloc (sizeof(t_philo), 1);
-		if (args->philo[i] == NULL)
-		{
-			printf("ELIZA\n");
-			return ;
-		}
-		args->philo[i]->args = args;
-		args->philo[i]->philo_nb = i + 1;
-		args->philo[i]->time_to_die = ft_atol(av[2]);
-		args->philo[i]->time_to_eat = ft_atol(av[3]);
-		args->philo[i]->time_to_sleep = ft_atol(av[4]);
-		if (ac == 6)
-			args->philo[i]->each_eat = ft_atol(av[5]);
-		else
-			args->philo[i]->each_eat = -1;
-		i++;
-	}
-	create_fork(args);
+        args->philo[i]->args = args;
+        args->philo[i]->philo_nb = i + 1;
+        args->philo[i]->time_to_die = ft_atol(av[2]);
+        args->philo[i]->time_to_eat = ft_atol(av[3]);
+        args->philo[i]->time_to_sleep = ft_atol(av[4]);
+        if (ac == 6)
+            args->philo[i]->each_eat = ft_atol(av[5]);
+        else
+            args->philo[i]->each_eat = -1;
+        i++;
+    }
 	i = 0;
-	what_first_time(args);
-	create_threads(args, rou);
 }
+
 
 int	check_arg(char **av, int ac)
 {
@@ -105,6 +102,9 @@ int main (int ac, char **av)
 			if (args.philo == NULL)
 				return (printf("VOLKAN\n"));
 			fill_value(av, &args, ac);
+			create_fork(&args);
+			what_first_time(&args);
+			create_threads(&args, rou);
 		}
 		else
 		{
