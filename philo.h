@@ -1,8 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aroualid <aroualid@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/07 18:37:58 by aroualid          #+#    #+#             */
+/*   Updated: 2024/10/07 18:39:17 by aroualid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
-
-typedef struct s_args t_args;
-
 
 # include "stdio.h"
 # include <limits.h>
@@ -11,6 +20,9 @@ typedef struct s_args t_args;
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <stdint.h>
+
+typedef struct s_args	t_args;
 
 typedef struct s_philo
 {
@@ -31,18 +43,22 @@ typedef struct s_args
 {
 	int					nb_philo;
 	pthread_mutex_t		mutex;
+	pthread_mutex_t		*forks;
 	int					die;
 	int					all_eat;
 	unsigned long		first_time;
 	t_philo				**philo;
 }						t_args;
 
-long	ft_atol(const char *str);
-int		ft_strlen(char *s);
-int		ft_isdigit(int c);
+long				ft_atol(const char *str);
+int					ft_strlen(char *s);
+int					ft_isdigit(int c);
 unsigned long		what_time(t_args *args);
-void		what_first_time(t_args *args);
-void	my_usleep(unsigned long time, t_args *args);
-void	*rou(t_philo *philo);
-int		create_threads(t_args *args, void *rou);
+void				what_first_time(t_args *args);
+void				my_usleep(unsigned long time, t_args *args);
+void				*rou(t_philo *philo);
+int					create_threads(t_args *args, void *rou);
+void				*ft_calloc(size_t nmemb, size_t size);
+void				free_philo(t_args *args);
+
 #endif
