@@ -6,7 +6,7 @@
 /*   By: aroualid <aroualid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 14:45:54 by aroualid          #+#    #+#             */
-/*   Updated: 2024/10/07 16:41:43 by aroualid         ###   ########.fr       */
+/*   Updated: 2024/10/10 22:09:19 by aroualid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,23 @@ void	my_sleep(t_philo *philo)
 		usleep(10);
 }
 
+void	*one_philo(t_philo *philo)
+{
+	pthread_mutex_lock(philo->right_fork);
+	pthread_mutex_lock(&philo->args->mutex);
+	if (philo->args->die == 0)
+		printf("%zu %d has taken a fork\n", what_time(philo->args),
+			philo->philo_nb);
+	pthread_mutex_unlock(&philo->args->mutex);
+	pthread_mutex_unlock(philo->right_fork);
+	my_usleep(philo->time_to_die, philo->args);
+	return (NULL);
+}
+
 void	*rou(t_philo *philo)
 {
+	if (philo->args->nb_philo == 1)
+		return (one_philo(philo));
 	if (philo->philo_nb % 2 != 0)
 		my_usleep(10, philo->args);
 	while (1)

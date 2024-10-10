@@ -6,7 +6,7 @@
 /*   By: aroualid <aroualid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 14:46:48 by aroualid          #+#    #+#             */
-/*   Updated: 2024/10/07 18:42:45 by aroualid         ###   ########.fr       */
+/*   Updated: 2024/10/10 22:25:28 by aroualid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	monitoring(t_args *args)
 			pthread_mutex_unlock(&args->mutex);
 			i++;
 		}
-		usleep(800);
+		my_usleep(500, args);
 		i = 0;
 	}
 }
@@ -72,15 +72,13 @@ void	join_dead(t_args *args)
 	j = 0;
 	if (args->die == 1 || args->all_eat == 1)
 	{
-		if (args->nb_philo > 1)
+		while (j < args->nb_philo)
 		{
-			while (j < args->nb_philo)
-			{
-				pthread_join(args->philo[j]->thread, NULL);
-				j++;
-			}
-			free_philo(args);
+			if (pthread_join(args->philo[j]->thread, NULL) != 0)
+				break ;
+			j++;
 		}
+		free_philo(args);
 		return ;
 	}
 }

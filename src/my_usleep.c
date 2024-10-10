@@ -6,7 +6,7 @@
 /*   By: aroualid <aroualid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:40:26 by aroualid          #+#    #+#             */
-/*   Updated: 2024/10/07 18:41:30 by aroualid         ###   ########.fr       */
+/*   Updated: 2024/10/10 22:24:41 by aroualid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	my_usleep(unsigned long my_time, t_args *args)
 	first_time = what_time(args);
 	time_to_wait = first_time + my_time;
 	what_is_time = what_time(args);
-	while (what_is_time < time_to_wait)
+	while (what_is_time <= time_to_wait)
 	{
 		pthread_mutex_lock(&args->mutex);
 		if (args->die == 1 || args->all_eat == 1)
@@ -47,7 +47,7 @@ void	my_usleep(unsigned long my_time, t_args *args)
 			return ;
 		}
 		pthread_mutex_unlock(&args->mutex);
-		usleep (10);
+		usleep (1);
 		what_is_time = what_time(args);
 	}
 }
