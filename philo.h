@@ -6,7 +6,7 @@
 /*   By: aroualid <aroualid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:37:58 by aroualid          #+#    #+#             */
-/*   Updated: 2024/10/07 18:39:17 by aroualid         ###   ########.fr       */
+/*   Updated: 2024/10/14 11:29:11 by aroualid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,5 @@ void				*rou(t_philo *philo);
 int					create_threads(t_args *args, void *rou);
 void				*ft_calloc(size_t nmemb, size_t size);
 void				free_philo(t_args *args);
-
+void				*one_philo(t_philo *philo);
 #endif

@@ -6,7 +6,7 @@
 /*   By: aroualid <aroualid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 14:46:48 by aroualid          #+#    #+#             */
-/*   Updated: 2024/10/10 22:25:28 by aroualid         ###   ########.fr       */
+/*   Updated: 2024/10/14 11:17:27 by aroualid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ int	create_threads(t_args *args, void *rou)
 		if (pthread_create(&args->philo[i]->thread, NULL, rou, args->philo[i]))
 		{
 			printf("Erreur lors de la création du thread\n");
+			join_dead(args);
+			free_philo(args);
 			return (1);
 		}
 		i++;
